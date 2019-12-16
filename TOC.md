@@ -300,6 +300,7 @@
 [Set-Matrix-Zeroes](https://github.com/SMartQi/LeetCode/blob/master/Code/Set-Matrix-Zeroes.cpp)  
 [Shift-2D-Grid](https://github.com/SMartQi/LeetCode/blob/master/Code/Shift-2D-Grid.cpp)  
 [Shortest-Bridge](https://github.com/SMartQi/LeetCode/blob/master/Code/Shortest-Bridge.cpp)  
+[Shortest-Path-in-a-Grid-with-Obstacles-Elimination](https://github.com/SMartQi/LeetCode/blob/master/Code/Shortest-Path-in-a-Grid-with-Obstacles-Elimination.cpp)  
 [Simplify-Path](https://github.com/SMartQi/LeetCode/blob/master/Code/Simplify-Path.cpp)  
 [Single-Number-III](https://github.com/SMartQi/LeetCode/blob/master/Code/Single-Number-III.cpp)  
 [Single-Number](https://github.com/SMartQi/LeetCode/blob/master/Code/Single-Number.cpp)  

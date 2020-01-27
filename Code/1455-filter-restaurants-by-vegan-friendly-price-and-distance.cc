@@ -1,10 +1,10 @@
 class Solution {
-    static bool myCompare(const pair<int, int> &a, const pair<int, int> &b) {
-        if (a.first == b.first) {
-            return a.second > b.second;
-        }
-        return a.first > b.first;
-    }
+    // static bool myCompare(const pair<int, int> &a, const pair<int, int> &b) {
+    //     if (a.first == b.first) {
+    //         return a.second > b.second;
+    //     }
+    //     return a.first > b.first;
+    // }
 public:
     vector<int> filterRestaurants(vector<vector<int>>& restaurants, int veganFriendly, int maxPrice, int maxDistance) {
         vector<pair<int, int>> choose;
@@ -16,7 +16,12 @@ public:
             }
         }
         
-        sort(choose.begin(), choose.end(), myCompare);
+        sort(choose.begin(), choose.end(), [](const pair<int, int> &a, const pair<int, int> &b) {
+            if (a.first == b.first) {
+                return a.second > b.second;
+            }
+            return a.first > b.first;
+        });
         
         vector<int> result;
         for (auto &p : choose) {

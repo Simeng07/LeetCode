@@ -9,27 +9,24 @@
  */
 class Solution {
     int result = 0;
-    unordered_map<TreeNode *, unordered_set<int>> m;
 public:
     int pathSum(TreeNode* root, int sum) {
-        helper(root, sum, sum, 0);
+        helper(root, sum, false);
         return result;
     }
-    void helper(TreeNode* root, int sum, int currentSum, int length) {
+    void helper(TreeNode* root, int sum, bool must) {
         if (!root) {
             return;
         }
-        if (m.find(root) == m.end() || m[root].find(length) == m[root].end()) {
-            m[root].insert(length);
-        } else {
-            return;
-        }
-        if (root->val == currentSum) {
+        if (sum == root->val) {
             result++;
         }
-        helper(root->left, sum, currentSum - root->val, length + 1);
-        helper(root->right, sum, currentSum - root->val, length + 1);
-        helper(root->left, sum, sum, 0);
-        helper(root->right, sum, sum, 0);
+        
+        if (!must) {
+            helper(root->left, sum, false);
+            helper(root->right, sum, false);
+        }
+        helper(root->left, sum - root->val, true);
+        helper(root->right, sum - root->val, true);
     }
 };

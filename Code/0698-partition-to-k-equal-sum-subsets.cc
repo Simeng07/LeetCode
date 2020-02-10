@@ -1,44 +1,40 @@
 class Solution {
     bool result = false;
+    int eachSum = 0;
+    vector<bool> used;
 public:
     bool canPartitionKSubsets(vector<int>& nums, int k) {
         int size = nums.size();
-        int total = 0;
-        for (auto num : nums) {
-            total += num;
-        }
+        int total = accumulate(nums.begin(), nums.end(), 0);
         if (total % k != 0) {
             return false;
         }
-        int sum = total / k;
-        sort(nums.begin(), nums.end());
-        if (sum < nums.back()) {
-            return false;
-        }
-        vector<int> sums(k, sum);
-        helper(nums, sums, nums.size() - 1);
-        
+        eachSum = total / k;
+        used = vector<bool>(size, false);
+        helper(nums, 0, 0, k);
         return result;
     }
     
-    void helper(vector<int>& nums, vector<int>& sums, int index) {
+    void helper(vector<int>& nums, int currentIndex, int currentSum, int remainSets) {
         if (result) {
             return;
         }
-        if (accumulate(sums.begin(), sums.end(), 0) == 0) {
+        if (remainSets == 0) {
             result = true;
             return;
         }
-        if (index < 0 || index >= nums.size()) {
-            return;
-        }
-        int current = nums[index];
-        for (int i = 0; i < sums.size(); i++) {
-            if (sums[i] - current >= 0) {
-                sums[i] -= current;
-                helper(nums, sums, index - 1);
-                sums[i] += current;
+        for (int i = currentIndex; i < nums.size() && !result; i++) {
+            if (used[i]) {
+                continue;
             }
+            used[i] = true;
+            int tmpSum = currentSum + nums[i];
+            if (tmpSum == eachSum) {
+                helper(nums, 0, 0, remainSets - 1);
+            } else if (tmpSum < eachSum) {
+                helper(nums, i + 1, tmpSum, remainSets);
+            }
+            used[i] = false;
         }
     }
 };

@@ -1,53 +1,66 @@
 class Solution {
-    vector<vector<string>> result;
+    unordered_map<string, string> relates;
 public:
     vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
-        sort(accounts.begin(), accounts.end());
-        string name = "";
-        int startIndex = 0;
-        for (int i = 0; i < accounts.size(); i++) {
-            if (accounts[i].size() == 0) {
+        unordered_map<string, string> leaders;
+        for (auto &account : accounts) {
+            if (account.size() <= 1) {
                 continue;
             }
-            if (accounts[i][0] != name) {
-                helper(accounts, name, startIndex, i - 1);
-                name = accounts[i][0];
-                startIndex = i;
+            string currentName = account[0];
+            string currentLeader = account[1];
+            
+            if (relates.find(currentLeader) != relates.end()) {
+                // has
+                currentLeader = findLeader(currentLeader);
+            } else {
+                leaders[currentLeader] = currentName;
+                relates[currentLeader] = currentLeader;
+            }
+            
+            for (int i = 2; i < account.size(); i++) {
+                if (account[i] == currentLeader) {
+                    continue;
+                }
+                if (relates.find(account[i]) != relates.end()) {
+                    string formerLeader = findLeader(account[i]);
+                    if (findLeader(currentLeader) != formerLeader) {
+                        // modify former leader
+                        relates[formerLeader] = currentLeader;
+                        leaders.erase(formerLeader);
+                    }
+                }
+                relates[account[i]] = currentLeader;
             }
         }
-        helper(accounts, name, startIndex, (int)accounts.size() - 1);
+        
+        unordered_map<string, set<string>> m;
+        for (auto &account : relates) {
+            // group those accounts
+            m[findLeader(account.second)].insert(account.first);
+        }
+        
+        vector<vector<string>> result;
+        for (auto &group : m) {
+            vector<string> v(1 + (group.second).size());
+            // name
+            int index = 0;
+            v[index] = leaders[group.first];
+            // accounts
+            index++;
+            for (auto &mail : group.second) {
+                v[index++] = mail;
+            }
+            result.push_back(v);
+        }
+        
         return result;
     }
-   
-    void helper(vector<vector<string>>& accounts, string name, int start, int end) {
-        if (start > end) {
-            return;
+    
+    string findLeader(string account) {
+        while (account != relates[account]) {
+            account = relates[account];
         }
-        set<int> s;
-        for (int i = start; i <= end; i++) {
-            s.insert(i);
-        }
-        for (int i = start; i <= end; i++) {
-            if (s.find(i) == s.end()) {
-                continue;
-            }
-            for (int j = 1; j < accounts[i].size(); j++) {
-                auto it = s.upper_bound(i);
-                if (it == s.end()) {
-                    break;
-                }
-                while (it != s.end()) {
-                    if (*it > i && find(accounts[*it].begin(), accounts[*it].end(), accounts[i][j]) != accounts[*it].end()) {
-                        accounts[i].insert(accounts[i].end(), accounts[*it].begin() + 1, accounts[*it].end());
-                        s.erase(*it);
-                    }
-                    ++it;
-                }
-            }
-            set<string> singlePerson(accounts[i].begin() + 1, accounts[i].end());
-            vector<string> person = {name};
-            person.insert(person.end(), singlePerson.begin(), singlePerson.end());
-            result.push_back(person);
-        }
+        return account;
     }
 };
